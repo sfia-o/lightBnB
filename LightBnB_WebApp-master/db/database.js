@@ -97,8 +97,31 @@ const getAllReservations = function (guest_id, limit = 10) {
  */
 
 const getAllProperties = (options, limit = 10) => {
+
+  const queryParams = [];
+
+  let queryStr = `
+  SELECT properties.*, avg(property_reviews.rating) as average_rating
+  FROM properties
+  JOIN property_reviews ON properties.id = property_id
+  `;
+
+  if(options.city) {
+    queryParams.push(`%${options.city}%`);
+    queryStr += `WHERE city LIKE $${queryParams.length}`;
+  }
+
+  queryParams.push(limit);
+  queryStr += `
+  GROUP BY properties.id
+  ORDER BY cost_per_night
+  LIMIT $${queryParams.length};
+  `;
+
+  console.log(queryStr, queryParams);
+
   return pool
-    .query(`SELECT * FROM properties LIMIT $1;`, [limit])
+    .query(queryStr, queryParams)
     .then((result) => {
       return result.rows;
     })
