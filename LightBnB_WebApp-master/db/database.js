@@ -99,6 +99,7 @@ const getAllReservations = function (guest_id, limit = 10) {
 const getAllProperties = (options, limit = 10) => {
 
   const queryParams = [];
+  const whereClauses = [];
 
   let queryStr = `
   SELECT properties.*, avg(property_reviews.rating) as average_rating
@@ -108,7 +109,18 @@ const getAllProperties = (options, limit = 10) => {
 
   if(options.city) {
     queryParams.push(`%${options.city}%`);
-    queryStr += `WHERE city LIKE $${queryParams.length}`;
+    whereClauses.push(`city LIKE $${queryParams.length}`);
+  }
+
+  if(options.owner_id) {
+    queryParams.push(options.owner_id)
+    whereClauses.push(`owner_id = $${queryParams.length}`);
+  }
+
+  if(options.minimum_price_per_night && options.maximum_price_per_night) {
+    queryParams.push(options.minimum_price_per_night * 100);
+    queryParams.push(options.maximum_price_per_night * 100);
+    whereClauses.push(`cost_per_night BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`);
   }
 
   queryParams.push(limit);
