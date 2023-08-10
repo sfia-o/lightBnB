@@ -128,6 +128,10 @@ const getAllProperties = (options, limit = 10) => {
     whereClauses.push(`avg(property_reviews.rating) >= $${queryParams.length}`);
   }
 
+  if(whereClauses.length > 0) {
+    queryStr += ` WHERE ${whereClauses.join( ' AND ')}`;
+  }
+
   queryParams.push(limit);
   queryStr += `
   GROUP BY properties.id
