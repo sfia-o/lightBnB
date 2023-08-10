@@ -123,6 +123,11 @@ const getAllProperties = (options, limit = 10) => {
     whereClauses.push(`cost_per_night BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`);
   }
 
+  if(options.minimum_rating) {
+    queryParams.push(options.minimum_rating);
+    whereClauses.push(`avg(property_reviews.rating) >= $${queryParams.length}`);
+  }
+
   queryParams.push(limit);
   queryStr += `
   GROUP BY properties.id
