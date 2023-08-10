@@ -1,5 +1,8 @@
 # LightBnB
 
+This is a student project completed by Sofia Oliveira, during the Web Development Bootcamp at Lighthouse Labs.
+It is a basic Airbnb clone that uses server-side Javascript to display the information from queries to web pages via SQL queries.
+
 ## Project Structure
 
 ```
